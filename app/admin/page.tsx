@@ -1,0 +1,397 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { db } from "@/lib/firebase";
+import {
+  ref,
+  onValue,
+  set,
+  get,
+  update,
+  remove,
+} from "firebase/database";
+
+export default function AdminPage() {
+  const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [questionText, setQuestionText] = useState("");
+  const [correctAnswer, setCorrectAnswer] = useState("");
+  const [questions, setQuestions] = useState<any>({});
+  const [answers, setAnswers] = useState<any>({});
+  const [scores, setScores] = useState<any>({});
+  const [isClosed, setIsClosed] = useState(false);
+  const [rankingVisible, setRankingVisible] = useState(false);
+  const [roundScores, setRoundScores] = useState<any>({});
+
+  // ===============================
+  // 🔥 リアルタイム監視
+  // ===============================
+  useEffect(() => {
+    onValue(ref(db, "currentQuestion"), (snap) => {
+      const q = snap.val() || 1;
+      setCurrentQuestion(q);
+
+      onValue(ref(db, `questions/${q}`), (qs) => {
+        setQuestionText(qs.val()?.text || "");
+        setCorrectAnswer(qs.val()?.answer || "");
+      });
+
+      onValue(ref(db, `answers/${q}`), (as) => {
+        setAnswers(as.val() || {});
+      });
+
+      onValue(ref(db, "roundScores"), (snap) => {
+        setRoundScores(snap.val() || {});
+      });
+    });
+
+    onValue(ref(db, "questions"), (snap) => {
+      setQuestions(snap.val() || {});
+    });
+
+    onValue(ref(db, "scores"), (snap) => {
+      setScores(snap.val() || {});
+    });
+
+    onValue(ref(db, "isClosed"), (snap) => {
+      setIsClosed(!!snap.val());
+    });
+
+    onValue(ref(db, "rankingVisible"), (snap) => {
+      setRankingVisible(!!snap.val());
+    });
+  }, []);
+
+  // ===============================
+  // 🔥 問題移動
+  // ===============================
+  const nextQuestion = async () => {
+    await set(ref(db, "currentQuestion"), currentQuestion + 1);
+    await set(ref(db, "isClosed"), false);
+    await set(ref(db, "rankingVisible"), false);
+  };
+
+  const prevQuestion = async () => {
+    if (currentQuestion > 1) {
+      await set(ref(db, "currentQuestion"), currentQuestion - 1);
+      await set(ref(db, "rankingVisible"), false);
+    }
+  };
+
+  // ===============================
+  // 🔥 締切
+  // ===============================
+  const closeAnswer = async () => {
+    await set(ref(db, "isClosed"), true);
+  };
+
+  // ===============================
+  // 🔥 採点確定
+  // ===============================
+  const finalizeScore = async () => {
+    if (!isClosed) return;
+
+    const snapshot = await get(
+      ref(db, `answers/${currentQuestion}`)
+    );
+
+    const data = snapshot.val() || {};
+
+    // ① timestamp順に並び替え
+    const sorted = Object.entries(data).sort(
+      (a: any, b: any) =>
+        (a[1]?.timestamp || 0) -
+        (b[1]?.timestamp || 0)
+    );
+
+    // 正解者だけ抽出
+    const correctUsers = sorted.filter(
+      ([_, value]: any) => value?.answer === correctAnswer
+    );
+
+    const roundResult: any = {};
+    const totalUpdate: any = {};
+
+    // まず全員0点
+    for (const [user] of sorted) {
+      roundResult[user] = 0;
+    }
+
+    // 正解者に順位点を付与
+    correctUsers.forEach(([user], index) => {
+      const score = Math.max(10 - index, 1);
+      roundResult[user] = score;
+    });
+    
+    // ② roundScores保存
+    await set(
+      ref(db, `roundScores/${currentQuestion}`),
+      roundResult
+    );
+
+    // ③ 総合得点更新
+    const scoreSnap = await get(ref(db, "scores"));
+    const currentTotals = scoreSnap.val() || {};
+
+    for (const user in roundResult) {
+      totalUpdate[user] =
+        (currentTotals[user] || 0) +
+        roundResult[user];
+    }
+
+    await update(ref(db, "scores"), totalUpdate);
+
+    // ④ 編集ロック + 順位表示
+    await set(ref(db, "rankingVisible"), true);
+
+    alert("採点完了・順位表示中");
+  };
+
+  // ===============================
+  // 🔥 得点編集
+  // ===============================
+  const handleScoreChange = async (
+    user: string,
+    field: string,
+    value: number
+  ) => {
+    if (!isClosed) return;
+
+    if (field === "round") {
+      await set(
+        ref(db, `roundScores/${currentQuestion}/${user}`),
+        value
+      );
+    }
+
+    if (field === "total") {
+      await set(ref(db, `scores/${user}`), value);
+    }
+  };
+
+  const handleQuestionChange = (
+    id: string,
+    field: string,
+    value: string
+  ) => {
+    setQuestions((prev: any) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value,
+      },
+    }));
+  };
+
+  const resetParticipants = async () => {
+    const ok = confirm("参加者データをすべてリセットしますか？");
+    if (!ok) return;
+
+    await remove(ref(db, "answers"));
+    await remove(ref(db, "scores"));
+    await remove(ref(db, "roundScores"));
+    await remove(ref(db, "users"));
+
+    await set(ref(db, "isClosed"), false);
+    await set(ref(db, "rankingVisible"), false);
+
+    alert("参加者データをリセットしました");
+  };
+
+  const saveAllQuestions = async () => {
+    await update(ref(db, "questions"), questions);
+    alert("問題を保存しました！");
+  };
+
+  // ===============================
+  // 🎨 UI
+  // ===============================
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">管理画面</h1>
+
+      <div className="flex gap-8">
+
+        {/* ================= LEFT ================= */}
+        <div className="w-1/2">
+
+          <p className="text-xl font-bold">
+            現在：第{currentQuestion}問
+          </p>
+
+          <p className="mt-2 text-lg">
+            問題：{questionText}
+          </p>
+
+          <p className="mt-2 text-blue-600 font-bold">
+            正答：{correctAnswer}
+          </p>
+
+          <div className="mt-4 space-x-2">
+            <button
+              onClick={prevQuestion}
+              className="bg-gray-600 text-white px-4 py-2 rounded"
+            >
+              前の問題へ
+            </button>
+
+            <button
+              onClick={nextQuestion}
+              className="bg-purple-600 text-white px-4 py-2 rounded"
+            >
+              次の問題へ
+            </button>
+
+            <button
+              onClick={closeAnswer}
+              className="bg-red-600 text-white px-4 py-2 rounded"
+            >
+              締切
+            </button>
+
+            <button
+              onClick={finalizeScore}
+              className="bg-green-600 text-white px-4 py-2 rounded"
+            >
+              採点確定
+            </button>
+
+            <button
+              onClick={resetParticipants}
+              className="bg-black text-white px-4 py-2 rounded"
+            >
+              参加者リセット
+            </button>
+
+          </div>
+
+          {/* 回答一覧（スクロール対応） */}
+          <h2 className="mt-8 text-2xl font-bold">
+            回答一覧
+          </h2>
+
+          <div className="mt-3 max-h-[50vh] overflow-y-auto border p-3 rounded">
+
+            {Object.entries(answers).map(
+
+              ([user, value]: any) => {
+
+                const roundScore =
+                roundScores?.[currentQuestion]?.[user] || 0;
+
+                return (
+                  <div
+                    key={user}
+                    className="flex justify-between border-b py-2"
+                  >
+                    <div>
+                      <div>
+                        {value?.name ?? user}：{value?.answer}
+                      </div>
+
+                      <div className="text-xs text-gray-500">
+                        {value?.timestamp
+                          ? new Date(value.timestamp).toLocaleTimeString()
+                          : ""}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 items-center">
+
+                      {/* 今回得点 */}
+                      <input
+                        type="number"
+                        value={roundScores?.[currentQuestion]?.[user] ?? 0}
+                        disabled={!isClosed || rankingVisible}
+                        onChange={(e) =>
+                          handleScoreChange(
+                            user,
+                            "round",
+                            Number(e.target.value)
+                          )
+                        }
+                        className="w-16 border p-1"
+                      />
+
+                      {/* 総合得点 */}
+                      <input
+                        type="number"
+                        value={scores[user] || 0}
+                        disabled={!isClosed || rankingVisible}
+                        onChange={(e) =>
+                          handleScoreChange(
+                            user,
+                            "total",
+                            Number(e.target.value)
+                          )
+                        }
+                        className="w-20 border p-1"
+                      />
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+
+        {/* ========================= */}
+        {/* 🔹 右側：問題一括編集 */}
+        {/* ========================= */}
+        <div className="w-1/2 overflow-y-auto max-h-[80vh]">
+
+          <h2 className="text-2xl font-bold mb-4">
+            問題一括編集
+          </h2>
+
+          {Object.entries(questions).map(
+            ([id, q]: any) => (
+              <div
+                key={id}
+                className="border p-4 mb-4 rounded"
+              >
+                <p className="font-bold">
+                  第{id}問
+                </p>
+
+                <input
+                  type="text"
+                  value={q.text}
+                  onChange={(e) =>
+                    handleQuestionChange(
+                      id,
+                      "text",
+                      e.target.value
+                    )
+                  }
+                  className="border w-full p-2 my-1"
+                  placeholder="問題文"
+                />
+
+                <input
+                  type="text"
+                  value={q.answer}
+                  onChange={(e) =>
+                    handleQuestionChange(
+                      id,
+                      "answer",
+                      e.target.value
+                    )
+                  }
+                  className="border w-full p-2 my-1"
+                  placeholder="正解"
+                />
+              </div>
+            )
+          )}
+
+          <button
+            onClick={saveAllQuestions}
+            className="bg-blue-600 text-white px-6 py-2 rounded"
+          >
+            すべて保存
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
