@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { ref, set, onValue, push } from "firebase/database";
 
@@ -10,6 +11,15 @@ export default function Player() {
   const [question, setQuestion] = useState<number | null>(null);
   const [isClosed, setIsClosed] = useState(false);
   const [userId, setUserId] = useState("");
+  const router = useRouter();
+
+    // ★ 認証チェック
+  useEffect(() => {
+    const auth = sessionStorage.getItem("auth");
+    if (auth !== "ok") {
+      router.replace("/enter");
+    }
+  }, [router]);
 
   useEffect(() => {
     let id = localStorage.getItem("quizUserId");
