@@ -10,7 +10,7 @@ export default function EnterPage() {
   const router = useRouter();
 
   const checkPassword = async () => {
-    const snapshot = await get(ref(db, "settings/password"));
+    const snapshot = await get(ref(db, "settings/access/password"));
 
     if (!snapshot.exists()) {
       alert("パスワード設定がありません");
