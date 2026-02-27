@@ -90,24 +90,42 @@ export default function Player() {
   return (
     <>
       {screenMode === "entry" && (
-        <p className={styles.specialMessage}>
-          他の参加者を待っています。<br></br>
-          しばらくお待ちください。
-        </p>
+        <>
+          <>
+            <main className={styles.main}>
+              <p className={styles.specialMessage}>
+                他の参加者を待っています。<br></br>
+                しばらくお待ちください。
+              </p>
+            </main>
+          </>
+        </>
       )}
 
       {screenMode === "ranking" && (
-        <p className={styles.specialMessage}>
-          現在の成績発表中です！<br></br>
-          スクリーンをご確認ください。
-        </p>
+        <>
+          <>
+            <main className={styles.main}>
+              <p className={styles.specialMessage}>
+                現在の成績発表中です！<br></br>
+                スクリーンをご確認ください。
+              </p>
+            </main>
+          </>
+        </>
       )}
 
       {screenMode === "final" && (
-        <p className={styles.specialMessage}>
-          最終成績発表中です！お疲れさまでした。<br></br>
-          そのまま、現在のタブを閉じてください。
-        </p>
+        <>
+          <>
+            <main className={styles.main}>
+              <p className={styles.specialMessage}>
+                最終成績発表中です！お疲れさまでした。<br></br>
+                そのまま、現在のタブを閉じてください。
+              </p>
+            </main>
+          </>
+        </>
       )}
 
       {screenMode === "question" && (
