@@ -19,7 +19,7 @@ export default function AdminPage() {
   const [answers, setAnswers] = useState<any>({});
   const [scores, setScores] = useState<any>({});
   const [isClosed, setIsClosed] = useState(false);
-  const [rankingVisible, setRankingVisible] = useState(false);
+  const [screenMode, setScreenMode] = useState("question");
   const [roundScores, setRoundScores] = useState<any>({});
 
   // ===============================
@@ -42,6 +42,7 @@ export default function AdminPage() {
       onValue(ref(db, "roundScores"), (snap) => {
         setRoundScores(snap.val() || {});
       });
+    
     });
 
     onValue(ref(db, "questions"), (snap) => {
@@ -56,10 +57,36 @@ export default function AdminPage() {
       setIsClosed(!!snap.val());
     });
 
-    onValue(ref(db, "rankingVisible"), (snap) => {
-      setRankingVisible(!!snap.val());
+    onValue(ref(db, "screenMode"), (snap) => {
+      setScreenMode(snap.val() || "question");
     });
   }, []);
+
+  useEffect(() => {
+    if (!isClosed) return;
+
+    const sorted = Object.entries(answers).sort(
+      (a: any, b: any) =>
+        (a[1]?.timestamp || 0) - (b[1]?.timestamp || 0)
+    );
+
+    const correctUsers = sorted.filter(
+      ([_, value]: any) => value?.answer === correctAnswer
+    );
+
+    const tempRound: any = {};
+
+    sorted.forEach(([user]) => {
+      tempRound[user] = 0;
+    });
+
+    correctUsers.forEach(([user], index) => {
+      tempRound[user] = Math.max(10 - index, 1);
+    });
+
+    set(ref(db, `roundScores/${currentQuestion}`), tempRound);
+
+  }, [answers, isClosed, correctAnswer]);
 
   // ===============================
   // 🔥 問題移動
@@ -67,13 +94,13 @@ export default function AdminPage() {
   const nextQuestion = async () => {
     await set(ref(db, "currentQuestion"), currentQuestion + 1);
     await set(ref(db, "isClosed"), false);
-    await set(ref(db, "rankingVisible"), false);
+    await set(ref(db, "screenMode"), "question");
   };
 
   const prevQuestion = async () => {
     if (currentQuestion > 1) {
       await set(ref(db, "currentQuestion"), currentQuestion - 1);
-      await set(ref(db, "rankingVisible"), false);
+      await set(ref(db, "screenMode"), "question");
     }
   };
 
@@ -90,48 +117,20 @@ export default function AdminPage() {
   const finalizeScore = async () => {
     if (!isClosed) return;
 
-    const snapshot = await get(
-      ref(db, `answers/${currentQuestion}`)
+    // ① すでに計算済みの今回得点を取得
+    const roundSnap = await get(
+      ref(db, `roundScores/${currentQuestion}`)
     );
 
-    const data = snapshot.val() || {};
+    const roundResult = roundSnap.val() || {};
 
-    // ① timestamp順に並び替え
-    const sorted = Object.entries(data).sort(
-      (a: any, b: any) =>
-        (a[1]?.timestamp || 0) -
-        (b[1]?.timestamp || 0)
-    );
-
-    // 正解者だけ抽出
-    const correctUsers = sorted.filter(
-      ([_, value]: any) => value?.answer === correctAnswer
-    );
-
-    const roundResult: any = {};
-    const totalUpdate: any = {};
-
-    // まず全員0点
-    for (const [user] of sorted) {
-      roundResult[user] = 0;
-    }
-
-    // 正解者に順位点を付与
-    correctUsers.forEach(([user], index) => {
-      const score = Math.max(10 - index, 1);
-      roundResult[user] = score;
-    });
-    
-    // ② roundScores保存
-    await set(
-      ref(db, `roundScores/${currentQuestion}`),
-      roundResult
-    );
-
-    // ③ 総合得点更新
+    // ② 現在の総合得点を取得
     const scoreSnap = await get(ref(db, "scores"));
     const currentTotals = scoreSnap.val() || {};
 
+    const totalUpdate: any = {};
+
+    // ③ 今回得点を総合に加算
     for (const user in roundResult) {
       totalUpdate[user] =
         (currentTotals[user] || 0) +
@@ -141,7 +140,9 @@ export default function AdminPage() {
     await update(ref(db, "scores"), totalUpdate);
 
     // ④ 編集ロック + 順位表示
-    await set(ref(db, "rankingVisible"), true);
+    await set(ref(db, "screenMode"), 
+      currentQuestion === 20 ? "final" : "ranking"
+    );
 
     alert("採点完了・順位表示中");
   };
@@ -190,6 +191,7 @@ export default function AdminPage() {
     await remove(ref(db, "scores"));
     await remove(ref(db, "roundScores"));
     await remove(ref(db, "users"));
+    await remove(ref(db, "inputName"));
 
     await set(ref(db, "isClosed"), false);
     await set(ref(db, "rankingVisible"), false);
@@ -227,6 +229,25 @@ export default function AdminPage() {
           </p>
 
           <div className="mt-4 space-x-2">
+            
+            <button
+              onClick={() =>
+                set(ref(db, "screenMode"), "entry")
+              }
+              className="bg-pink-600 text-white px-4 py-2 rounded"
+            >
+              参加者確認画面
+            </button> 
+
+            <button
+              onClick={() =>
+                set(ref(db, "screenMode"), "question")
+              }
+              className="bg-indigo-600 text-white px-4 py-2 rounded"
+            >
+              問題表示
+            </button>
+
             <button
               onClick={prevQuestion}
               className="bg-gray-600 text-white px-4 py-2 rounded"
@@ -271,9 +292,13 @@ export default function AdminPage() {
 
           <div className="mt-3 max-h-[50vh] overflow-y-auto border p-3 rounded">
 
-            {Object.entries(answers).map(
-
-              ([user, value]: any) => {
+            {Object.entries(answers)
+              .sort(
+                (a: any, b: any) =>
+                  (a[1]?.timestamp || 0) -
+                  (b[1]?.timestamp || 0)
+              )
+              .map(([user, value]: any) => {
 
                 const roundScore =
                 roundScores?.[currentQuestion]?.[user] || 0;
@@ -301,7 +326,7 @@ export default function AdminPage() {
                       <input
                         type="number"
                         value={roundScores?.[currentQuestion]?.[user] ?? 0}
-                        disabled={!isClosed || rankingVisible}
+                        disabled={!isClosed || screenMode !== "question"}
                         onChange={(e) =>
                           handleScoreChange(
                             user,
@@ -316,7 +341,7 @@ export default function AdminPage() {
                       <input
                         type="number"
                         value={scores[user] || 0}
-                        disabled={!isClosed || rankingVisible}
+                        disabled={!isClosed || screenMode !== "question"}
                         onChange={(e) =>
                           handleScoreChange(
                             user,

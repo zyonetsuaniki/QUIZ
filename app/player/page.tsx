@@ -16,9 +16,14 @@ export default function Player() {
     // ★ 認証チェック
   useEffect(() => {
     const auth = sessionStorage.getItem("auth");
-    if (auth !== "ok") {
+    const storedName = sessionStorage.getItem("playerName");
+
+    if (auth !== "ok" || !storedName) {
       router.replace("/enter");
+      return;
     }
+
+    setName(storedName);
   }, [router]);
 
   useEffect(() => {
@@ -60,6 +65,7 @@ export default function Player() {
     console.log("question:", question);
 
     await set(ref(db, `answers/${question}/${name}`), {
+      name,
       answer,
       timestamp: Date.now(),
     });
@@ -77,13 +83,9 @@ export default function Player() {
 
       <p>現在の問題：{question ? `第 ${question} 問` : "待機中..."}</p>
 
-      <input
-        type="text"
-        placeholder="名前"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="border p-2"
-      />
+      <p className="border p-2 bg-gray-100 w-48 text-center">
+        {name}
+      </p>
 
       <input
         type="text"
