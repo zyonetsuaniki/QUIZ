@@ -1,0 +1,108 @@
+.html {
+	background-color: #ffffff;
+	width: 100%;
+	height: 100%;
+}
+.main{
+    background-color: #f0f0f0;
+    width: 100vw;
+    height: calc(100vh - 130px);
+	padding: 0;
+	line-height: 2;
+	flex: 1;
+    display: grid;
+}
+.body_left{
+    justify-content: center;
+    align-items: center;
+}
+.body_right{
+    grid-column: 2/20;
+    justify-content: center;
+}
+.text{
+    color: #000000;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+}
+.text2{
+    padding: 10 50 10 50;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+}
+.text2_1{
+    color: #000000;
+    padding: 10 50 10 50;
+    font-weight: bold;
+    font-size: 30px;
+    height: 100px;
+    width: 500px;
+    text-align: center;
+}
+.text3{
+    color: #000000;
+    font-weight: bold;
+    font-size: 40px;
+    height: 80px;
+    display: grid;
+    text-align: center;
+}
+.question{
+    justify-content: center;
+    align-items: center;
+    min-height: 70%;
+}
+.text4{
+    color: #000000;
+    padding: 100 100 25 100;
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+}
+.text5{
+    color: #000000;
+    padding: 50 100 50 100;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+}
+.text6{
+    color: #ff0000;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+}
+.text7{
+    color: #000000;
+    font-weight: bold;
+    font-size: 50px;
+    height: 130px;
+    text-align: center;
+}
+.text8{
+    align-items: center;
+    top:0;
+}
+.text9{
+    color: #000000;
+    font-size: 40px;
+    display:flex;
+    text-align: center;
+}
+.text10{
+    color: #000000;
+    font-size: 40px;
+    padding: 0 0 0 100;
+    width: 800px;
+    display:flex;
+    text-align: center;
+}
+.text11{
+    color: #000000;
+    font-size: 40px;
+    padding: 0 100 0 10;
+    display:flex;
+    text-align: right;
+}

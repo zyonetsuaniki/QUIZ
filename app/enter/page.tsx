@@ -1,5 +1,6 @@
 "use client";
 
+import styles from './page.module.css';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ref, get, set, push  } from "firebase/database";
@@ -40,31 +41,37 @@ export default function EnterPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="text-xl font-bold">入室認証</h1>
+    <>
+        <>
+            <main className={styles.main}>
+                <div className={styles.enter}>
+                    <div className={styles.text}>入室認証</div>
 
-      <input
-        type="text"
-        placeholder="名前"
-        value={inputName}
-        onChange={(e) => setInputName(e.target.value)}
-        className="border p-2"
-      />
+                    <input
+                        type="text"
+                        placeholder="名前"
+                        value={inputName}
+                        onChange={(e) => setInputName(e.target.value)}
+                        className={styles.cp_iptxt}
+                    />
 
-      <input
-        type="password"
-        placeholder="パスワード"
-        value={inputPassword}
-        onChange={(e) => setInputPassword(e.target.value)}
-        className="border p-2"
-      />
+                    <input
+                        type="password"
+                        placeholder="パスワード"
+                        value={inputPassword}
+                        onChange={(e) => setInputPassword(e.target.value)}
+                        className={styles.cp_iptxt}
+                    />
 
-      <button
-        onClick={checkPassword}
-        className="px-4 py-2 bg-blue-500 text-white rounded"
-      >
-        入室
-      </button>
-    </main>
+                    <button
+                        onClick={checkPassword}
+                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                    >
+                        入室
+                    </button>
+                </div>
+            </main>
+        </>
+    </>
   );
 }

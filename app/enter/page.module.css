@@ -1,0 +1,71 @@
+.html {
+	background-color: #ffffff;
+	width: 100%;
+	height: 100%;
+}
+.main{
+    background-color: #f0f0f0;
+    width: 100vw;
+    height: calc(100vh - 130px);
+	padding: 0;
+	line-height: 2;
+	flex: 1;
+}
+.enter{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+.text{
+    color: #000000;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+}
+.cp_iptxt {
+    background-color: #ffffff;
+    position: center;
+    border-width:1px solid #1b2538;
+    width: 100%;
+    height: 50px;;
+    margin: 40px 0;
+    display: flex;
+}
+.cp_iptxt input[type=text] {
+    font: 15px/1.6 sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.3em;
+    transition: 0.3s;
+    border: 1px solid #1b2538;
+    border-radius: 4px;
+    outline: none;
+    align-items: center;
+    justify-content: center;
+}
+.cp_iptxt input[type=text] {
+    padding-left: 40px;
+    align-items: center;
+    justify-content: center;
+}
+.cp_iptxt [class^="svg_"] {
+    position: absolute;
+    left: 10px;
+    mask-repeat: no-repeat;
+    mask-position: center center;
+    mask-size: contain;
+    width: 20px;
+    height: 20px;
+    background-color: #aaaaaa;
+    transition: 0.3s;
+    align-items: center;
+    justify-content: center;
+}
+
+/*focus時の設定*/
+.cp_iptxt input[type=text]:focus {
+  border-color: #da3c41;
+}
+.cp_iptxt input[type=text]:focus + [class^="svg_"] {
+  background-color: #da3c41;
+}
