@@ -26,7 +26,7 @@
     background-color: #ffffff;
     position: center;
     border-width:1px solid #1b2538;
-    width: 100%;
+    width: 90vw;
     height: 50px;;
     margin: 40px 0;
     display: flex;
@@ -34,7 +34,7 @@
 .cp_iptxt input[type=text] {
     font: 15px/1.6 sans-serif;
     box-sizing: border-box;
-    width: 100%;
+    width: 90vw;
     padding: 0.3em;
     transition: 0.3s;
     border: 1px solid #1b2538;
