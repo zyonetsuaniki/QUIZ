@@ -6,7 +6,7 @@
 .main{
     background-color: #f0f0f0;
     width: 100vw;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 60px);
 	padding: 0;
 	line-height: 2;
 	flex: 1;
@@ -73,7 +73,7 @@
 	display: block;
 	text-align: center;
 	text-decoration: none;
-	width: 17%;
+	width: 50%;
 	margin:  30 auto;
 	overflow: clip;
 	padding: 0 1rem;
@@ -82,7 +82,7 @@
 	position: relative;
 	font-weight: bold;
 	justify-content: center;
-	background: linear-gradient(to top, #ffffff, #fffaf0);
+	background: linear-gradient(to top, #ffffff, #75dfff);
 	color: #000000;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
 	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, .2);

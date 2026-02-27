@@ -6,7 +6,7 @@
 .main{
     background-color: #f0f0f0;
     width: 100vw;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 60px);
 	padding: 0;
 	line-height: 2;
 	flex: 1;

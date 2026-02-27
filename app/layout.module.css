@@ -2,9 +2,9 @@
     background-color: #fffff0;
     color: #000000;
     font-weight: bold;
-    font-size: 90px;
+    font-size: 40px;
     text-align: center;
-    height: 130px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,4 +21,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+@media screen and (max-width: 769px){
+.header {
+    background-color: #fffff0;
+    color: #000000;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 }
