@@ -25,11 +25,15 @@
 .cp_iptxt {
     background-color: #ffffff;
     position: center;
-    border-width:1px solid #1b2538;
+    border: 1px solid #000000;
+    border-width:2px solid #1b2538;
     width: 90vw;
     height: 50px;;
     margin: 20px 0;
-    display: flex;
+    padding-left: 30px;
+    display: grid;
+    align-items: center;
+    justify-content: center;
 }
 .cp_iptxt input[type=text] {
     font: 15px/1.6 sans-serif;
@@ -37,8 +41,9 @@
     width: 90vw;
     padding: 0.3em;
     transition: 0.3s;
-    border: 1px solid #1b2538;
+    border: 2px solid #1b2538;
     border-radius: 4px;
+    padding-left: 30px;
     outline: none;
     align-items: center;
     justify-content: center;

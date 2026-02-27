@@ -21,6 +21,7 @@ export default function AdminPage() {
   const [isClosed, setIsClosed] = useState(false);
   const [screenMode, setScreenMode] = useState("question");
   const [roundScores, setRoundScores] = useState<any>({});
+  const [users, setUsers] = useState<any>({});
 
   // ===============================
   // 🔥 リアルタイム監視
@@ -60,6 +61,11 @@ export default function AdminPage() {
     onValue(ref(db, "screenMode"), (snap) => {
       setScreenMode(snap.val() || "question");
     });
+
+    onValue(ref(db, "users"), (snap) => {
+      setUsers(snap.val() || {});
+    });
+
   }, []);
 
   useEffect(() => {
@@ -215,6 +221,10 @@ export default function AdminPage() {
 
         {/* ================= LEFT ================= */}
         <div className="w-1/2">
+
+          <p className="mt-2 text-red-600 font-bold">
+            参加者数：{Object.keys(users).length}人
+          </p>
 
           <p className="text-xl font-bold">
             現在：第{currentQuestion}問

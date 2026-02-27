@@ -1,6 +1,5 @@
 "use client";
 
-import img from "next/image";
 import Head from 'next/head';
 import styles from './page.module.css';
 import { useEffect, useState } from "react";

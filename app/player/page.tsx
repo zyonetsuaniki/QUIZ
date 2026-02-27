@@ -1,5 +1,6 @@
 "use client";
 
+import styles from './page.module.css';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
@@ -11,6 +12,8 @@ export default function Player() {
   const [question, setQuestion] = useState<number | null>(null);
   const [isClosed, setIsClosed] = useState(false);
   const [userId, setUserId] = useState("");
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [screenMode, setScreenMode] = useState("");
   const router = useRouter();
 
     // ★ 認証チェック
@@ -40,18 +43,25 @@ export default function Player() {
   useEffect(() => {
     const questionRef = ref(db, "currentQuestion");
     const closeRef = ref(db, "isClosed");
+    const screenModeRef = ref(db, "screenMode");
 
     const unsubscribeQuestion = onValue(questionRef, (snapshot) => {
       setQuestion(snapshot.val());
+      setIsAnswered(false);
     });
 
     const unsubscribeClose = onValue(closeRef, (snapshot) => {
       setIsClosed(snapshot.val());
     });
 
+    const unsubscribeScreenMode = onValue(screenModeRef, (snapshot) => {
+      setScreenMode(snapshot.val());
+    });
+
     return () => {
       unsubscribeQuestion();
       unsubscribeClose();
+      unsubscribeScreenMode();
     };
   }, []);
 
@@ -73,37 +83,75 @@ export default function Player() {
     await set(ref(db, `users/${name}`), {
       name,
     });
-
+    setIsAnswered(true);
     setAnswer("");
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="text-2xl font-bold">参加者画面</h1>
+    <>
+      {screenMode === "entry" && (
+        <p className={styles.specialMessage}>
+          他の参加者を待っています。しばらくお待ちください。
+        </p>
+      )}
 
-      <p>現在の問題：{question ? `第 ${question} 問` : "待機中..."}</p>
+      {screenMode === "ranking" && (
+        <p className={styles.specialMessage}>
+          現在の成績発表中です！スクリーンをご確認ください。
+        </p>
+      )}
 
-      <p className="border p-2 bg-gray-100 w-48 text-center">
-        {name}
-      </p>
+      {screenMode === "final" && (
+        <p className={styles.specialMessage}>
+          最終成績発表中です！お疲れさまでした。<br></br>
+          そのまま、現在のタブを閉じてください。
+        </p>
+      )}
 
-      <input
-        type="text"
-        placeholder="回答"
-        value={answer}
-        onChange={(e) => setAnswer(e.target.value)}
-        className="border p-2"
-      />
+      {screenMode === "question" && (
+        <>
+          <>
+            <main className={styles.main}>
+              <div className={styles.player}>
+              <h1 className={styles.text}>参加者画面</h1>
 
-      <button
-        onClick={handleSubmit}
-        disabled={isClosed}
-        className={`px-4 py-2 rounded text-white ${
-            isClosed ? "bg-gray-400" : "bg-green-500"
-        }`}
-      >
-        {isClosed ? "締切済み" : "回答する"}
-      </button>
-    </main>
+              <p className={styles.text1}>現在の問題：{question ? `第 ${question} 問` : "待機中..."}</p>
+
+              <p className={styles.cp}>
+                {name}
+              </p>
+
+              <input
+                type="text"
+                placeholder="回答"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                className={styles.cp_iptxt}
+              />
+
+              <button
+                onClick={handleSubmit}
+                disabled={isClosed || isAnswered}
+                className={`${styles.answerButton} ${
+                  isClosed
+                    ? styles.closed
+                    : isAnswered
+                    ? styles.answered
+                    : styles.active
+                }`}
+              >
+                {isClosed
+                  ? "締切済み"
+                  : isAnswered
+                  ? "回答済み"
+                  : "回答する"}
+              </button>  
+              </div>
+
+            </main>
+          </>
+        </>
+      )}
+    </>
   );
 }
