@@ -91,13 +91,15 @@ export default function Player() {
     <>
       {screenMode === "entry" && (
         <p className={styles.specialMessage}>
-          他の参加者を待っています。しばらくお待ちください。
+          他の参加者を待っています。<br></br>
+          しばらくお待ちください。
         </p>
       )}
 
       {screenMode === "ranking" && (
         <p className={styles.specialMessage}>
-          現在の成績発表中です！スクリーンをご確認ください。
+          現在の成績発表中です！<br></br>
+          スクリーンをご確認ください。
         </p>
       )}
 
