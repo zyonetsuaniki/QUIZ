@@ -65,7 +65,7 @@ export default function EnterPage() {
 
                     <button
                         onClick={checkPassword}
-                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                        className={styles.btn}
                     >
                         入室
                     </button>
