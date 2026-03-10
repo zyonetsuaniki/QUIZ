@@ -22,7 +22,7 @@
     text-align: center;
 }
 .text2{
-    padding: 10 50 10 50;
+    padding: 0 50 0 50;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     text-align: center;
