@@ -62,7 +62,7 @@ export default function AdminPage() {
       setScreenMode(snap.val() || "question");
     });
 
-    onValue(ref(db, "users"), (snap) => {
+    onValue(ref(db, "inputName"), (snap) => {
       setUsers(snap.val() || {});
     });
 
