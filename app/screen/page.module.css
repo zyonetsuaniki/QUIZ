@@ -22,14 +22,14 @@
     text-align: center;
 }
 .text2{
-    padding: 0 50 0 50;
+    padding: 0 25px 0 25px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     text-align: center;
 }
 .text2_1{
     color: #000000;
-    padding: 10 50 10 50;
+    padding: 10px 25px 10px 25px;
     font-weight: bold;
     font-size: 30px;
     height: 100px;
