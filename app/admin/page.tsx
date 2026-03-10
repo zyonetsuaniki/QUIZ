@@ -8,7 +8,7 @@ import {
   set,
   get,
   update,
-  remove,
+  remove
 } from "firebase/database";
 
 export default function AdminPage() {

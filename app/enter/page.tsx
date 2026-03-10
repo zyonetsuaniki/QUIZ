@@ -3,7 +3,7 @@
 import styles from './page.module.css';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ref, get, set, push  } from "firebase/database";
+import { ref, get, set, push, child  } from "firebase/database";
 import { db } from "@/lib/firebase";
 
 export default function EnterPage() {
@@ -12,9 +12,22 @@ export default function EnterPage() {
   const router = useRouter();
 
   const checkPassword = async () => {
-    if (!inputName.trim()) {
+    const trimmedName = inputName.trim();
+    if (!trimmedName) {
       alert("名前を入力してください。\nスクリーンを確認して、同じ名前の人がいる場合は\n避けてください。");
       return;
+    }
+
+    // 🔥 追加：同じ名前チェック
+    const usersSnapshot = await get(ref(db, "inputName"));
+
+    if (usersSnapshot.exists()) {
+      const users = usersSnapshot.val();
+
+      if (users[trimmedName]) {
+        alert("その名前はすでに使われています。\n別の名前にしてください。");
+        return;
+      }
     }
 
     const snapshot = await get(ref(db, "settings/access/password"));
