@@ -1,6 +1,6 @@
 .main{
     background-color: #f0f0f0;
-    width: 100vw;
+    width: 100%;
     height: calc(100vh - 60px);
 	padding: 0;
 	line-height: 2;
