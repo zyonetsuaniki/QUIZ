@@ -43,10 +43,10 @@ export default function EnterPage() {
       // 🔥 ここを追加
       const newUserRef = push(ref(db, "inputName"));
       await set(newUserRef, {
-        name: inputName.trim(),
+        name: trimmedName,
       });
       sessionStorage.setItem("auth", "ok");
-      sessionStorage.setItem("playerName", inputName.trim());
+      sessionStorage.setItem("playerName", trimmedName);
       router.push("/player");
     } else {
       alert("パスワードが違います");
