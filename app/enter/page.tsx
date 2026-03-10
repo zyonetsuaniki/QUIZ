@@ -18,13 +18,18 @@ export default function EnterPage() {
       return;
     }
 
-    // 🔥 追加：同じ名前チェック
-    const usersSnapshot = await get(ref(db, "inputName"));
+    // 🔥 inputName一覧を取得
+    const snapshotNames = await get(ref(db, "inputName"));
 
-    if (usersSnapshot.exists()) {
-      const users = usersSnapshot.val();
+    if (snapshotNames.exists()) {
+      const data = snapshotNames.val();
 
-      if (users[trimmedName]) {
+      // 🔥 同じ名前があるかチェック
+      const isDuplicate = Object.values(data).some(
+        (user: any) => user.name === trimmedName
+      );
+
+      if (isDuplicate) {
         alert("その名前はすでに使われています。\n別の名前にしてください。");
         return;
       }
