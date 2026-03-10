@@ -124,8 +124,9 @@ function EntryView({ inputName }: any) {
             <p className={styles.text3}>
               参加者数：{userList.length}人
             </p>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img src="/QR.png" alt="QR" />
-
+            </div>
           </div>
 
           {/* ===== 右：参加者確認（2/3） ===== */}
