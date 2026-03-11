@@ -179,7 +179,7 @@ function QuestionView({
             <p className={styles.text4}>第{number}問</p>
 
             <p className={styles.text5}>{question}</p>
-            {Number(question) >= 16 && Number(question) <= 20 && (
+            {number >= 16 && number <= 20 && (
               <img
                 src={`/quizImages/q${question}.jpg`}
                 alt="問題画像"
