@@ -1,6 +1,7 @@
 "use client";
 
 import Head from 'next/head';
+import Image from "next/image";
 import styles from './page.module.css';
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
