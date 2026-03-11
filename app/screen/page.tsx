@@ -47,9 +47,7 @@ export default function ScreenPage() {
     onValue(ref(db, "isClosed"), (snap) => {
       setIsClosed(!!snap.val());
     });
-  }, []);
-
-  useEffect(() => {
+ 
     const questionRef = ref(db, "currentQuestion");
 
     onValue(questionRef, (snapshot) => {
