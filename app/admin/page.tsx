@@ -214,7 +214,7 @@ export default function AdminPage() {
   // 🎨 UI
   // ===============================
   return (
-    <div className="p-5 max-h-[100vh-100px]">
+    <div className="pt-20 p-5 max-h-[100vh-100px]">
       <div className="flex max-h-[50px]">
         <div className="w-1/6">
           <h1 className="text-3xl font-bold">管理画面</h1>
