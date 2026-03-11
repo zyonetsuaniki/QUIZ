@@ -254,7 +254,7 @@ function FinalView({ sorted, users }: any) {
                 key={user}
                 className={styles.text9}
               >
-                <div className={styles.text10}>
+                <div className={styles.text12}>
                   {index + 1}位：{users?.[user]?.name ?? user}
                 </div>
                 <div className={styles.text11}>{totalScore}点</div>
