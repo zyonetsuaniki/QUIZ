@@ -1,7 +1,7 @@
 .main{
     background-color: #f0f0f0;
     width: 100%;
-    height: calc(100vh - 100px);
+    height: 100vh;
 	padding: 0;
 	line-height: 2;
 	flex: 1;
@@ -104,7 +104,7 @@
 .text12{
     color: #000000;
     font-size: 40px;
-    padding: 0 0 0 300;
+    padding: 0 0 0 250;
     width: 900px;
     display:flex;
     text-align: center;
