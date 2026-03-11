@@ -51,14 +51,14 @@
 }
 .text4{
     color: #000000;
-    padding: 100 100 25 100;
+    padding: 25 100 25 100;
     font-weight: bold;
     font-size: 50px;
     text-align: center;
 }
 .text5{
     color: #000000;
-    padding: 50 100 50 100;
+    padding: 0 100;
     font-weight: bold;
     font-size: 40px;
     text-align: center;
@@ -102,8 +102,8 @@
     text-align: right;
 }
 .quizImage{
-  width: 80%;
-  max-width: 900px;
-  margin: 40px auto;
-  display: block;
+    width: 400px;
+    display: inline-block;
+    align-items: center;
+    text-align: center;
 }
