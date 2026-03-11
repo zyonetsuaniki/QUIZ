@@ -101,3 +101,9 @@
     display:flex;
     text-align: right;
 }
+.quizImage{
+  width: 80%;
+  max-width: 900px;
+  margin: 40px auto;
+  display: block;
+}

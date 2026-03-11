@@ -171,7 +171,13 @@ function QuestionView({
         <main className={styles.main}>
           <div className={styles.question}>
             <p className={styles.text4}>第{number}問</p>
-            <br></br>
+            {question && question >= 16 && question <= 20 && (
+              <img
+                src={`/quizImages/q${question}.jpg`}
+                alt="問題画像"
+                className={styles.quizImage}
+              />
+            )}
             <p className={styles.text5}>{question}</p>
             {isClosed && <p className={styles.text6}>回答締切</p>}          
           </div>
