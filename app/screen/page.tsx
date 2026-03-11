@@ -182,7 +182,7 @@ function QuestionView({
             <p className={styles.text5}>{question}</p>
             {number >= 16 && number <= 20 && (
               <img
-                src={`/quizImages/q${question}.jpg`}
+                src={`/quizImages/q${number}.jpg`}
                 alt="問題画像"
                 className={styles.quizImage}
               />
