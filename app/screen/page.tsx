@@ -247,7 +247,6 @@ function FinalView({ sorted, users }: any) {
       <body>
         <main className={styles.main}>
           <div className={styles.text7}>🏆 最終結果 🏆</div>
-
           <div className={styles.text8}>
             {sorted.map(([user, totalScore]: any, index: number) => (
               <div
