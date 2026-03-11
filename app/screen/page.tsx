@@ -171,6 +171,8 @@ function QuestionView({
         <main className={styles.main}>
           <div className={styles.question}>
             <p className={styles.text4}>第{number}問</p>
+
+            <p className={styles.text5}>{question}</p>
             {question && question >= 16 && question <= 20 && (
               <img
                 src={`/quizImages/q${question}.jpg`}
@@ -178,7 +180,6 @@ function QuestionView({
                 className={styles.quizImage}
               />
             )}
-            <p className={styles.text5}>{question}</p>
             {isClosed && <p className={styles.text6}>回答締切</p>}          
           </div>
         </main>
