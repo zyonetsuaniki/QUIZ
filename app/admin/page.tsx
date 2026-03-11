@@ -214,31 +214,13 @@ export default function AdminPage() {
   // 🎨 UI
   // ===============================
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">管理画面</h1>
-
-      <div className="flex gap-8">
-
-        {/* ================= LEFT ================= */}
-        <div className="w-1/2">
-
-          <p className="mt-2 text-red-600 font-bold">
-            参加者数：{Object.keys(users).length}人
-          </p>
-
-          <p className="text-xl font-bold">
-            現在：第{currentQuestion}問
-          </p>
-
-          <p className="mt-2 text-lg">
-            問題：{questionText}
-          </p>
-
-          <p className="mt-2 text-blue-600 font-bold">
-            正答：{correctAnswer}
-          </p>
-
-          <div className="mt-4 space-x-2">
+    <div className="p-5 max-h-[100vh-100px]">
+      <div className="flex max-h-[50px]">
+        <div className="w-1/6">
+          <h1 className="text-3xl font-bold">管理画面</h1>
+        </div>
+        <div className="w-5/6">
+          <div className="space-x-2">
             
             <button
               onClick={() =>
@@ -292,15 +274,38 @@ export default function AdminPage() {
             >
               参加者リセット
             </button>
-
           </div>
+        </div>
+      </div>
+      <div className="flex gap-8 max-h-[570px]">
+
+        {/* ================= LEFT ================= */}
+        <div className="w-1/2">
+
+          <p className="mt-2 text-red-600 font-bold">
+            参加者数：{Object.keys(users).length}人
+          </p>
+
+          <p className="text-xl font-bold">
+            現在：第{currentQuestion}問
+          </p>
+
+          <p className="mt-2 text-lg">
+            問題：{questionText}
+          </p>
+
+          <p className="mt-2 text-blue-600 font-bold">
+            正答：{correctAnswer}
+          </p>
+
+
 
           {/* 回答一覧（スクロール対応） */}
-          <h2 className="mt-8 text-2xl font-bold">
+          <h2 className="mt-3 text-2xl font-bold">
             回答一覧
           </h2>
 
-          <div className="mt-3 max-h-[50vh] overflow-y-auto border p-3 rounded">
+          <div className="mt-3 max-h-[385px] overflow-y-auto border p-3 rounded">
 
             {Object.entries(answers)
               .sort(
