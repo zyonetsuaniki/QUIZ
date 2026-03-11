@@ -11,7 +11,7 @@ type ScreenMode = "entry" | "question" | "ranking" | "final";
 export default function ScreenPage() {
   const [screenMode, setScreenMode] = useState<ScreenMode>("question");
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState<number | null>(null);
   const [scores, setScores] = useState<any>({});
   const [roundScores, setRoundScores] = useState<any>({});
   const [users, setUsers] = useState<any>({});
@@ -46,6 +46,14 @@ export default function ScreenPage() {
 
     onValue(ref(db, "isClosed"), (snap) => {
       setIsClosed(!!snap.val());
+    });
+  }, []);
+
+  useEffect(() => {
+    const questionRef = ref(db, "currentQuestion");
+
+    onValue(questionRef, (snapshot) => {
+      setQuestion(snapshot.val());
     });
   }, []);
 
